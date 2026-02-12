@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>For You</title>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #2d1b1e; 
+      font-family: Georgia, serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #intro {
+      position: fixed;
+      inset: 0;
+      background: #2d1b1e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    /* THE CONTAINER */
+    #flipbook {
+      display: none; 
+      width: 80vw;
+      height: 80vh;
+    }
+
+    /* FORCE BLACK ON EVERY PAGE LAYER */
+    .page {
+      width: 100%;
+      height: 100%;
+      background-color: #000 !important; /* This kills the white box */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .page img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Target library internals */
+    .stPageFlip { background: #000 !important; }
+  </style>
+</head>
+<body>
+
+  <div id="intro">
+    <h1>Because I thought of you, lover</h1>
+    <p>click to begin, then swipe</p>
+  </div>
+
+  <div id="flipbook">
+    </div>
+
+  <script src="https://unpkg.com/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+
+  <script>
+    const intro = document.getElementById("intro");
+    const flipbookContainer = document.getElementById("flipbook");
+
+    // 1. Create the HTML for the pages first
+    for (let i = 1; i <= 25; i++) {
+      const pageDiv = document.createElement("div");
+      pageDiv.className = "page"; // Matches our black CSS
+      pageDiv.innerHTML = `<img src="images/page${i}.png" alt="Page ${i}">`;
+      flipbookContainer.appendChild(pageDiv);
+    }
+
+    intro.addEventListener("click", () => {
+      intro.style.display = "none";
+      flipbookContainer.style.display = "block";
+
+      // 2. Initialize using the HTML elements already in the container
+      const pageFlip = new St.PageFlip(flipbookContainer, {
+        width: 1920,
+        height: 1080,
+        size: "stretch",
+        minWidth: 320,
+        maxWidth: 1200, 
+        minHeight: 180,
+        maxHeight: 675,
+        showCover: true,
+        useMouseEvents: true,
+        backgroundColor: "#000000" // Tells the canvas to draw black
+      });
+
+      // 3. Use loadFromHTML instead of loadFromImages
+      pageFlip.loadFromHTML(document.querySelectorAll(".page"));
+
+    }, {once: true});
+  </script>
+</body>
+</html>
